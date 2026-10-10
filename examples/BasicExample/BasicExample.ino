@@ -8,10 +8,15 @@ void setup() {
     delay(500);
     
     Serial.println("AS5600 Multi-turn Encoder - Basic Example");
-    Serial.println("10 turns = 0-1023 position");
-    Serial.println("---");
     
-    if (!encoder.begin(10)) {
+    AS5600MultiTurnConfig config;
+    config.total_turns = 10;
+    config.output_min = 0;
+    config.output_max = 1023;
+    config.wrap_around = false;
+    config.start_position = 512;
+    
+    if (!encoder.begin(config)) {
         Serial.println("ERROR: Failed to initialize AS5600!");
         while (1) delay(1000);
     }
