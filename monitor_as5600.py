@@ -35,21 +35,17 @@ try:
             if not line or not line.startswith('Raw:'):
                 continue
             
-            # Parse: "Raw: 910  Angle: 79.98  Pos: 534/1023  RawPos: 21390/40960  Mag: 2134  AGC: 66"
+            # Parse: "Raw: 2663  Angle: 234.05  Pos: 511/1023 (49%)  Turns: 10  Wrap: OFF  Mag: 2110  AGC: 62"
             parts = line.split()
-            if len(parts) >= 8:
+            if len(parts) >= 6:
                 try:
                     raw = int(parts[1])
                     pos = int(parts[5].split('/')[0])
-                    raw_pos = int(parts[7].split('/')[0])
                     
                     raw_bar = draw_bar(raw, 4095, 35)
                     pos_bar = draw_bar(pos, 1023, 35)
-                    rawpos_bar = draw_bar(raw_pos, 40960, 35)
                     
-                    print(f"Raw: {raw:4d}/4095  [{raw_bar}]", flush=True)
-                    print(f"Pos: {pos:4d}/1023  [{pos_bar}]  RawPos: {raw_pos:5d}/40960  [{rawpos_bar}]", flush=True)
-                    print("", flush=True)
+                    print(f"Raw: {raw:4d}/4095  [{raw_bar}]  Pos: {pos:4d}/1023  [{pos_bar}]", flush=True)
                 except (ValueError, IndexError):
                     pass
         
