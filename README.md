@@ -33,9 +33,13 @@ Add to your `platformio.ini`:
 platform = espressif32
 board = esp32-c3-devkitm-1
 framework = arduino
+monitor_speed = 115200
 lib_deps =
     https://github.com/DerRKDCB/AS5600MultiTurn.git
     adafruit/Adafruit AS5600 Library@^1.0.0
+build_flags =
+    -DARDUINO_USB_MODE=1
+    -DARDUINO_USB_CDC_ON_BOOT=1
 ```
 
 ### Arduino IDE
@@ -159,6 +163,8 @@ platformio run -t upload
 platformio device monitor
 ```
 
+The `monitor_speed = 115200` in platformio.ini sets the serial monitor baud rate to match `Serial.begin(115200)`.
+
 ## Monitor Script
 
 Real-time terminal monitor with scrolling bar graphs:
@@ -170,7 +176,6 @@ python3 monitor_as5600.py
 Shows:
 - Raw angle (0-4095) with bar
 - Position (0-1023) with bar
-- Raw position (0-40960) with bar
 
 ## How It Works
 
