@@ -12,7 +12,7 @@ bool AS5600MultiTurn::begin(uint32_t total_turns) {
     _config.total_turns = total_turns;
     _wire.begin(_sda, _scl);
     
-    if (!_as5600.begin()) {
+    if (!_as5600.begin(AS5600_DEFAULT_ADDR, &_wire)) {
         return false;
     }
     

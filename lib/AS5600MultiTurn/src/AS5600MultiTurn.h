@@ -15,7 +15,7 @@ struct AS5600MultiTurnConfig {
 
 class AS5600MultiTurn {
 public:
-    AS5600MultiTurn(TwoWire& wire = Wire, uint8_t sda = 8, uint8_t scl = 9);
+    AS5600MultiTurn(TwoWire& wire = Wire, uint8_t sda = SDA, uint8_t scl = SCL);
     
     bool begin(const AS5600MultiTurnConfig& config = AS5600MultiTurnConfig());
     bool begin(uint32_t total_turns);
