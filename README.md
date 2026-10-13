@@ -1,10 +1,22 @@
-# AS5600MultiTurn
+# AS5600 multi-turn knob
 
-Arduino library for using the AS5600 hall effect magnetic rotary position sensor as a **linear multi-turn encoder**.
+A 3D-printable rotary knob built around an AS5600 magnetic angle sensor, with an Arduino library that turns its single-turn readings into a configurable **multi-turn position**. This repository contains the [FreeCAD design and print files](cad/README.md), [photos and CAD views](img/README.md), and the [`AS5600MultiTurn` library](lib/AS5600MultiTurn/src/AS5600MultiTurn.h) with examples.
 
-## Features
+| Printed knob | CAD assembly |
+|:--:|:--:|
+| <img src="img/Screenshot_14-Oct_00-11-16_31344.png" alt="Orange 3D-printed knob on a workbench" width="420"> | <img src="img/Screenshot_14-Oct_00-16-26_16558.png" alt="CAD view of the knob, bearing mount and AS5600 board" width="420"> |
 
-- **Multi-turn tracking**: Tracks absolute position across multiple rotations (default 10 turns = 0-1023)
+## Make the knob
+
+- [CAD and assembly guide](cad/README.md): editable FreeCAD model, individual body and knob 3MF files, and a four-set print plate.
+- [Image gallery and video](img/README.md): printed parts, electronics, bearing, and CAD views.
+- [Firmware demo](src/main.cpp): PlatformIO project for an ESP32-C3 Super Mini.
+
+The printable parts are a mounting body and a rotating knob. The design includes a seat for a **6000-2RS bearing (10 mm ID × 26 mm OD × 8 mm wide)** and a white AS5600 breakout board. A suitable diametrically magnetized magnet must rotate with the knob, centered over the stationary sensor. See the [hardware guide](cad/README.md) for the design files, parts references, and assembly notes.
+
+## Library features
+
+- **Multi-turn tracking**: Tracks position across multiple rotations (default 10 turns = 0-1023)
 - **Configurable behavior**: Clamp at endpoints or wrap around (overflow)
 - **Configurable turns**: Set any number of turns (1 to 32+)
 - **Configurable output range**: Any min/max range (default 0-1023)
@@ -12,7 +24,7 @@ Arduino library for using the AS5600 hall effect magnetic rotary position sensor
 - **Raw access**: Get raw angle (0-4095), angle in degrees, magnitude, AGC
 - **Reset capability**: Reset position to any value at runtime
 
-## Hardware
+## Electronics
 
 - AS5600 sensor (I2C address 0x36)
 - ESP32-C3 / ESP32 / Arduino / any Arduino-compatible board
@@ -22,35 +34,13 @@ Default pins for ESP32-C3 Super Mini:
 - SDA: GPIO 8
 - SCL: GPIO 9
 
-## Installation
+## Using the library
 
-### PlatformIO (from GitHub)
+The library lives in [`lib/AS5600MultiTurn`](lib/AS5600MultiTurn) and depends on the **Adafruit AS5600 Library**.
 
-Add to your `platformio.ini`:
+### PlatformIO
 
-```ini
-[env:your_board]
-platform = espressif32
-board = esp32-c3-devkitm-1
-framework = arduino
-monitor_speed = 115200
-lib_deps =
-    https://github.com/DerRKDCB/AS5600MultiTurn.git
-    adafruit/Adafruit AS5600 Library@^1.0.0
-build_flags =
-    -DARDUINO_USB_MODE=1
-    -DARDUINO_USB_CDC_ON_BOOT=1
-```
-
-### Arduino IDE
-
-1. Sketch → Include Library → Manage Libraries
-2. Search "AS5600MultiTurn" (once published to library registry)
-3. Or: Sketch → Include Library → Add .ZIP Library → select downloaded repo
-
-### Manual
-
-Copy `lib/AS5600MultiTurn` to your project's `lib/` folder.
+This repository is already configured as a PlatformIO project: `platformio.ini` includes the local library and installs the Adafruit dependency. For another project, copy `lib/AS5600MultiTurn` into that project's `lib/` directory and add `adafruit/Adafruit AS5600 Library@^1.0.0` to its `lib_deps`.
 
 ## Quick Start
 
@@ -186,6 +176,8 @@ The AS5600 provides a 12-bit angle (0-4095) per turn. The library:
 4. Accumulates total raw position across turns
 5. Maps to configured output range
 6. Clamps or wraps at endpoints based on `wrap_around` setting
+
+Call `update()` often enough that the knob moves less than half a rotation between readings. Multi-turn position is tracked in memory; after a restart, it starts from the configured `start_position` (the middle of the output range by default).
 
 ## Wiring (ESP32-C3 Super Mini)
 
